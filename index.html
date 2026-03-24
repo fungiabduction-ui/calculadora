@@ -317,10 +317,10 @@ function sN(msg){const el=document.getElementById('notif');el.textContent=msg;el
 // ============================================================
 // TRACKING — pegá tu URL de Apps Script acá abajo
 // ============================================================
-const APPS_SCRIPT_URL = "PEGAR_URL_AQUI";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw_G-U3_7zPpiuoeA8_YSjx9iPKpnxTzPYF9MiduHuJKn0-F9ZU2LZ9u7i-DN0UobGIYg/exec";
 
 function enviarTicketASheets(ticketTexto) {
-  if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "PEGAR_URL_AQUI") return;
+  if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbw_G-U3_7zPpiuoeA8_YSjx9iPKpnxTzPYF9MiduHuJKn0-F9ZU2LZ9u7i-DN0UobGIYg/exec") return;
   const productos = [];
   CFG.grupos.forEach(g => {
     if (!g.tramos || !g.tramos.length) return;
