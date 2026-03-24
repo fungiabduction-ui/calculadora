@@ -81,6 +81,17 @@ input:focus,select:focus{border-color:var(--ac)}select option{background:var(--b
 <div class="ahorro-total" id="ahorroTotal"><div class="ahorro-total-inner"><div class="ahorro-total-left"><div class="ahorro-total-icon">🎁</div><div class="ahorro-total-text"><div class="lbl">Tu ahorro total por volumen</div><div class="amt" id="ahorroTotalAmt">—</div><div class="sub" id="ahorroTotalSub"></div></div></div><div class="ahorro-pct" id="ahorroPct">—</div></div></div>
 <div class="total-sec"><div id="desglose"></div><div class="total-sep" id="sepMain" style="display:none"></div><div class="total-main"><div><div class="total-lbl">Total a pagar</div><div class="total-amt" id="totalAmt">$ 0</div><div class="total-usdt" id="totalUsdt" style="display:none"></div></div><button class="gbtn" style="width:auto;padding:14px 24px;margin:0;font-size:12px" onclick="generarTicket()">🧾 GENERAR</button></div></div>
 <div class="ticket-wrap" id="ticketWrap"><div class="card" style="margin-bottom:10px"><div class="ct">🧾 Tu pedido</div><div class="ticket-out" id="ticketOut"></div></div><div class="ticket-actions"><button class="tbtn" onclick="copiar()">⎘ Copiar ticket</button><button class="tbtn wa" onclick="compartirWA()">📲 WhatsApp</button><button class="tbtn reset" onclick="resetear()">↺</button></div></div>
+<div class="card" id="feedbackCard" style="background:#fff;border:1px solid #e0e0e0;">
+  <div class="ct" style="color:#333;">💬 Buzón de sugerencias</div>
+  <p style="font-family:var(--mo);font-size:9px;color:#888;margin-bottom:14px;letter-spacing:.3px;">Anónimo · Tu opinión nos ayuda a mejorar</p>
+  <div style="margin-bottom:10px"><label style="color:#666;">Asunto</label><input type="text" id="fb-asunto" placeholder="ej: Quiero sugerir algo..." style="background:#f8f8f8;border:1px solid #ddd;color:#333;"></div>
+  <div class="fr2" style="margin-bottom:10px">
+    <div><label style="color:#666;">Email (opcional)</label><input type="email" id="fb-email" placeholder="tu@email.com" style="background:#f8f8f8;border:1px solid #ddd;color:#333;"></div>
+    <div><label style="color:#666;">Teléfono (opcional)</label><input type="tel" id="fb-tel" placeholder="+54 11 ..." style="background:#f8f8f8;border:1px solid #ddd;color:#333;"></div>
+  </div>
+  <div style="margin-bottom:14px"><label style="color:#666;">Mensaje</label><textarea id="fb-msg" placeholder="Contanos tu experiencia, sugerencia o consulta..." style="width:100%;background:#f8f8f8;border:1px solid #ddd;color:#333;font-family:var(--mo);font-size:12px;padding:9px 11px;outline:none;border-radius:0;resize:vertical;min-height:80px;transition:border-color .2s;" onfocus="this.style.borderColor='#00e5a0'" onblur="this.style.borderColor='#ddd'"></textarea></div>
+  <button onclick="enviarFeedback()" style="background:#00e5a0;color:#000;font-family:var(--mo);font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border:none;cursor:pointer;padding:13px 20px;width:100%;">📨 ENVIAR MENSAJE</button>
+</div>
 <div class="footer" id="cfg-footer"></div>
 </div>
 <div class="notif" id="notif"></div>
@@ -317,7 +328,7 @@ function sN(msg){const el=document.getElementById('notif');el.textContent=msg;el
 // ============================================================
 // TRACKING — pegá tu URL de Apps Script acá abajo
 // ============================================================
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyMIov-0kq3T2hg257WgOcVQttLic5dsqVEZ83RjCc4D4wmH2pvi2xkCk08ti2CmJxs/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwCwMnnU2E4LqM149oed1RCTKsqljKDEGHhcvmfzBwhCW_LHucSkGNTzq6bNUnKyHFb/exec";
 
 function enviarTicketASheets(ticketTexto) {
   if (!APPS_SCRIPT_URL) return;
@@ -353,6 +364,26 @@ function enviarTicketASheets(ticketTexto) {
     nota:document.getElementById('nota').value.trim()||'',
     productos,ticketTexto};
   fetch(APPS_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(()=>{});
+}
+
+function enviarFeedback(){
+  const asunto=document.getElementById('fb-asunto').value.trim();
+  const msg=document.getElementById('fb-msg').value.trim();
+  if(!asunto&&!msg){sN('Escribí al menos un asunto o mensaje');return;}
+  if(!APPS_SCRIPT_URL){sN('Sin conexión al servidor');return;}
+  const payload={
+    tipo:'feedback',
+    asunto:asunto||'(sin asunto)',
+    email:document.getElementById('fb-email').value.trim()||'',
+    telefono:document.getElementById('fb-tel').value.trim()||'',
+    mensaje:msg||'(sin mensaje)'
+  };
+  fetch(APPS_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(()=>{});
+  document.getElementById('fb-asunto').value='';
+  document.getElementById('fb-email').value='';
+  document.getElementById('fb-tel').value='';
+  document.getElementById('fb-msg').value='';
+  sN('✓ Mensaje enviado, gracias!');
 }
 
 applyTexts();renderProductos();upd();
